@@ -14,7 +14,7 @@ import javax.swing.*;
  * @author Egor Kulikov (kulikov@devexperts.com)
  */
 public class TaskConfigurationType implements ConfigurationType {
-    private static final Icon ICON = IconLoader.getIcon("/icons/taskIcon.png");
+    private static final Icon ICON = IconLoader.getIcon("/icons/taskIcon.png", TaskConfigurationType.class);
     private final ConfigurationFactory factory;
     public static TaskConfigurationType INSTANCE;
 

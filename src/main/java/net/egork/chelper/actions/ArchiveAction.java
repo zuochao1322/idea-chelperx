@@ -25,6 +25,7 @@ import net.egork.chelper.util.TaskUtilities;
 import net.egork.chelper.util.Utilities;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Egor Kulikov (kulikov@devexperts.com)
@@ -170,40 +171,40 @@ public class ArchiveAction extends AnAction {
     }
 
     public static void setOtherConfiguration(RunManagerImpl manager, Task task) {
-        RunConfiguration[] allConfigurations = manager.getAllConfigurations();
+        List<RunConfiguration> allConfigurations = manager.getAllConfigurationsList();
         for (RunConfiguration configuration : allConfigurations) {
             if (configuration instanceof TaskConfiguration) {
                 Task other = ((TaskConfiguration) configuration).getConfiguration();
                 if (!task.contestName.equals(other.contestName)) {
                     continue;
                 }
-                manager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
+                manager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
                 return;
             }
         }
         for (RunConfiguration configuration : allConfigurations) {
             if (configuration instanceof TaskConfiguration || configuration instanceof TopCoderConfiguration) {
-                manager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
+                manager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
                 return;
             }
         }
     }
 
     public static void setOtherConfiguration(RunManagerImpl manager, TopCoderTask task) {
-        RunConfiguration[] allConfigurations = manager.getAllConfigurations();
+        List<RunConfiguration> allConfigurations = manager.getAllConfigurationsList();
         for (RunConfiguration configuration : allConfigurations) {
             if (configuration instanceof TopCoderConfiguration) {
                 TopCoderTask other = ((TopCoderConfiguration) configuration).getConfiguration();
                 if (!task.contestName.equals(other.contestName)) {
                     continue;
                 }
-                manager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
+                manager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
                 return;
             }
         }
         for (RunConfiguration configuration : allConfigurations) {
             if (configuration instanceof TaskConfiguration || configuration instanceof TopCoderConfiguration) {
-                manager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
+                manager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(manager, configuration, false));
                 return;
             }
         }

@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class KattisParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/kattis.png");
+        return IconLoader.getIcon("/icons/kattis.png", KattisParser.class);
     }
 
     public String getName() {

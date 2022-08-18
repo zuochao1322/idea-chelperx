@@ -27,7 +27,7 @@ public class CodeChefParser implements Parser {
     private final static List<String> SPECIAL = Arrays.asList(EASY_ID, MEDIUM_ID, HARD_ID, CHALLENGE_ID, PEER_ID, SCHOOL_ID);
 
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/codechef.png");
+        return IconLoader.getIcon("/icons/codechef.png", CodeChefParser.class);
     }
 
     public String getName() {

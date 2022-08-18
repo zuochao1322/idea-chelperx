@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class CodeforcesParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/codeforces.png");
+        return IconLoader.getIcon("/icons/codeforces.png", CodeforcesParser.class);
     }
 
     public String getName() {

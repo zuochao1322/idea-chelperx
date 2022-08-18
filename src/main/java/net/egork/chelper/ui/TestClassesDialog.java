@@ -28,7 +28,7 @@ public class TestClassesDialog extends JDialog {
     public TestClassesDialog(String[] testClasses, final Project project, final String location, FileCreator fileCreator, final String baseName) {
         super(null, "Test classes", ModalityType.APPLICATION_MODAL);
         this.fileCreator = fileCreator;
-        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/check.png")));
+        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/check.png", TestClassesDialog.class)));
         setAlwaysOnTop(true);
         setResizable(false);
         this.testClasses = testClasses;

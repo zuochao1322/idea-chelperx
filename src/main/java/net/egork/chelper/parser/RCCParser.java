@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class RCCParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/rcc.png");
+        return IconLoader.getIcon("/icons/rcc.png", RCCParser.class);
     }
 
     public String getName() {

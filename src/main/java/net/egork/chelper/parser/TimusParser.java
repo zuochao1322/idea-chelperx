@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class TimusParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/timus.png");
+        return IconLoader.getIcon("/icons/timus.png", TimusParser.class);
     }
 
     public String getName() {

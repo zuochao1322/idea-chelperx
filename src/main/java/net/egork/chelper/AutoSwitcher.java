@@ -68,12 +68,12 @@ public class AutoSwitcher implements ProjectComponent {
                             return;
                         }
                         RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
-                        for (RunConfiguration configuration : runManager.getAllConfigurations()) {
+                        for (RunConfiguration configuration : runManager.getAllConfigurationsList()) {
                             if (configuration instanceof TopCoderConfiguration) {
                                 TopCoderTask task = ((TopCoderConfiguration) configuration).getConfiguration();
                                 if (task != null && file.equals(TaskUtilities.getFile(Utilities.getData(project).defaultDirectory, task.name, project))) {
                                     busy = true;
-                                    runManager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
+                                    runManager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
                                             configuration, false));
                                     busy = false;
                                 }
@@ -81,7 +81,7 @@ public class AutoSwitcher implements ProjectComponent {
                                 Task task = ((TaskConfiguration) configuration).getConfiguration();
                                 if (task != null && file.equals(FileUtilities.getFileByFQN(task.taskClass, configuration.getProject()))) {
                                     busy = true;
-                                    runManager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
+                                    runManager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
                                             configuration, false));
                                     busy = false;
                                     return;

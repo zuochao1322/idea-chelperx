@@ -123,7 +123,7 @@ public class UnarchiveTaskAction extends AnAction {
             int result = JOptionPane.showOptionDialog(null, "Task location is not under source or in default" +
                             "package, do you want to put it in default directory instead?", "Restore task",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    IconLoader.getIcon("/icons/restore.png"), null, null);
+                    IconLoader.getIcon("/icons/restore.png", UnarchiveTaskAction.class), null, null);
             if (result == JOptionPane.YES_OPTION) {
                 String defaultDirectory = Utilities.getData(project).defaultDirectory;
                 baseDirectory = FileUtilities.getFile(project, defaultDirectory);

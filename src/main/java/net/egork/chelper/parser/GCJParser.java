@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class GCJParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/gcj.png");
+        return IconLoader.getIcon("/icons/gcj.png", GCJParser.class);
     }
 
     public String getName() {
