@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -61,10 +61,10 @@ public class HackerRankParser implements Parser {
             List<Test> tests = new ArrayList<Test>();
             while (parser.advanceIfPossible(true, "<div class=\"challenge_sample_input\">") != null) {
                 parser.advance(true, "<span class=\"err\">");
-                String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>")).
+                String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>")).
                         replace("</span>", "").replace("<span class=\"err\">", "");
                 parser.advance(true, "<span class=\"err\">");
-                String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>")).
+                String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>")).
                         replace("</span>", "").replace("<span class=\"err\">", "");
                 tests.add(new Test(testInput, testOutput, tests.size()));
             }

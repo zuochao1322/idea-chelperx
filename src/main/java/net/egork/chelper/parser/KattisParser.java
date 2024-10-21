@@ -7,7 +7,7 @@ import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
 import net.egork.chelper.util.FileUtilities;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -41,7 +41,7 @@ public class KattisParser implements Parser {
                 StringParser currentPart = new StringParser(parser.advance(true, "</tbody>"));
                 while (currentPart.advanceIfPossible(true, "<a href=\"/contests/") != null) {
                     String id = currentPart.advance(true, "\">");
-                    String name = StringEscapeUtils.unescapeHtml(currentPart.advance(false, "</a>"));
+                    String name = StringEscapeUtils.unescapeHtml4(currentPart.advance(false, "</a>"));
                     contests.add(new Description(id, name));
                 }
                 if (!receiver.isStopped()) {
@@ -108,7 +108,7 @@ public class KattisParser implements Parser {
                     String letter = parser.advance(false, "</th>");
                     parser.advance(true, "<a href=\"");
                     String taskId = parser.advance(true, "\">");
-                    String title = StringEscapeUtils.unescapeHtml(parser.advance(false, "</a>"));
+                    String title = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</a>"));
                     ids.add(new Description(taskId + " " + letter, title));
                 }
             } catch (ParseException ignored) {
@@ -128,7 +128,7 @@ public class KattisParser implements Parser {
                 parser.advance(true, "<tbody>");
                 while (parser.advanceIfPossible(true, "<td class=\"name_column\"><a href=\"") != null) {
                     String taskID = parser.advance(true, "\">");
-                    String title = StringEscapeUtils.unescapeHtml(parser.advance(false, "</a>"));
+                    String title = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</a>"));
                     ids.add(new Description(taskID, title));
                 }
             } catch (ParseException ignored) {
@@ -172,7 +172,7 @@ public class KattisParser implements Parser {
                 contestName = parser.advance(false, "</h2>");
             }
             parser.advance(true, "<div class=\"headline-wrapper\"><h1>");
-            String taskName = StringEscapeUtils.unescapeHtml(parser.advance(false, "</h1>")).
+            String taskName = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</h1>")).
                     replace("<br/>", " - ").replace("<br>", " - ");
             List<Test> tests = new ArrayList<Test>();
             while (parser.advanceIfPossible(true, "<table class=\"sample\" summary=\"sample data\">") != null) {
@@ -180,8 +180,8 @@ public class KattisParser implements Parser {
                 String testInput = parser.advance(false, "</pre>").trim() + "\n";
                 parser.advance(true, "<pre>");
                 String testOutput = parser.advance(false, "</pre>").trim() + "\n";
-                tests.add(new Test(StringEscapeUtils.unescapeHtml(testInput),
-                        StringEscapeUtils.unescapeHtml(testOutput), tests.size()));
+                tests.add(new Test(StringEscapeUtils.unescapeHtml4(testInput),
+                        StringEscapeUtils.unescapeHtml4(testOutput), tests.size()));
             }
             parser.advance(true, "<p><strong>Memory limit: </strong>");
             String heapMemory = parser.advance(false, " ") + "M";

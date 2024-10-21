@@ -53,6 +53,8 @@ public class TaskConfigurationPanel extends JPanel {
     private JPanel interactorSettings;
     private JCheckBox isInteractive;
     private SelectOrCreateClass interactor;
+    private JCheckBox useThreadLocalStack;
+    private JTextField stackSize;
 
     public TaskConfigurationPanel(final Task task, boolean isNewTask, final Project project, final SizeChangeListener listener, JPanel buttonPanel) {
         super(new BorderLayout(5, 5));
@@ -278,6 +280,20 @@ public class TaskConfigurationPanel extends JPanel {
         advancedWrapper.add(advanced, BorderLayout.WEST);
         add(basic, BorderLayout.WEST);
         add(advancedWrapper, BorderLayout.CENTER);
+        useThreadLocalStack = new JCheckBox("Use ThreadLocal Stack");
+        useThreadLocalStack.setSelected(task.useThreadLocalStack);
+        rightAdvanced.add(useThreadLocalStack);
+        rightAdvanced.add(new JLabel("Stack Size(bytes):"));
+        stackSize = new JTextField(task.stackSize);
+        stackSize.setEnabled(false);
+        rightAdvanced.add(stackSize);
+        useThreadLocalStack.addActionListener(e -> {
+            if(useThreadLocalStack.isSelected()) {
+                stackSize.setEnabled(true);
+            } else {
+                stackSize.setEnabled(false);
+            }
+        });
     }
 
     public void setAdvancedVisibility(boolean visibility) {
@@ -295,7 +311,8 @@ public class TaskConfigurationPanel extends JPanel {
                 task.tests, location.getText(), vmArgs.getText(), mainClass.getText(),
                 taskClass.getText(), checkerClass.getText(), checkerParameters.getText(), getTestClass(),
                 date.getText(), contestName.getText(), truncate.isSelected(), task.inputClass, task.outputClass,
-                includeLocale.isSelected(), failOnOverflow.isSelected(), template.getText(), isInteractive.isSelected(), interactor.getText());
+                includeLocale.isSelected(), failOnOverflow.isSelected(), template.getText(), isInteractive.isSelected(), interactor.getText(),
+                useThreadLocalStack.isSelected(), stackSize.getText());
     }
 
     private String[] getTestClass() {

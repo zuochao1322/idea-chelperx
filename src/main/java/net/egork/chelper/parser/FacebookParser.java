@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -67,10 +67,10 @@ public class FacebookParser implements Parser {
             parser.advance(true, "<span class=\"fsm\">Example input</span>", "<span class=\"fsm\">Sample input</span>");
             parser.advance(true, "<pre");
             parser.advance(true, ">");
-            String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+            String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
             parser.advance(true, "<pre");
             parser.advance(true, ">");
-            String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+            String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
             return Collections.singleton(new Task(taskName, defaultTestType(), input, output, new Test[]{new Test(testInput, testOutput)},
                     null, "-Xmx1024M", "Main", taskClass, TokenChecker.class.getCanonicalName(), "",
                     new String[0], null, contestName, true, null, null, true, false));

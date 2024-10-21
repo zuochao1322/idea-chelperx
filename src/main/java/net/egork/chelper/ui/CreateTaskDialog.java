@@ -86,7 +86,7 @@ public class CreateTaskDialog extends JDialog {
                 defaultTask.checkerClass, defaultTask.checkerParameters, defaultTask.testClasses,
                 defaultTask.date, defaultTask.contestName, defaultTask.truncate, defaultTask.inputClass,
                 defaultTask.outputClass, defaultTask.includeLocale, defaultTask.failOnOverflow, defaultTask.template,
-                defaultTask.interactive, defaultTask.interactor);
+                defaultTask.interactive, defaultTask.interactor, defaultTask.useThreadLocalStack, defaultTask.stackSize);
         CreateTaskDialog dialog = new CreateTaskDialog(task, isNewTask, project);
         dialog.setVisible(true);
         Utilities.updateDefaultTask(dialog.task);
