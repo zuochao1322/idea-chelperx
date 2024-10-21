@@ -1,9 +1,9 @@
 <idea-plugin>
     <name>CHelperX</name>
     <description>Inlines library code and provides testing framework</description>
-    <version>4.4.2</version>
-    <vendor>Kaitian Xie</vendor>
-    <idea-version since-build="221"/>
+    <version>4.5.0</version>
+    <vendor>Chao Zuo</vendor>
+    <idea-version since-build="241"/>
 
     <application-components>
         <!-- Add your application components here -->

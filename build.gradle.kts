@@ -87,4 +87,17 @@ tasks {
         sinceBuild.set("241")  // 2024.1
         untilBuild.set("")     // No upper bound
     }
+
+    val copyDependencies by registering(Copy::class) {
+        from(configurations.runtimeClasspath)
+        into(layout.buildDirectory.dir("dependencies"))
+    }
+
+    buildPlugin {
+        dependsOn(copyDependencies)
+        from(layout.buildDirectory.dir("dependencies")) {
+            into("lib")
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        }
+    }
 }
