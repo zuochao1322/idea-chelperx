@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -51,15 +51,15 @@ public class BayanParser implements Parser {
             contestName = "Bayan " + Character.toUpperCase(contestName.charAt(0)) + contestName.substring(1);
             parser.advance(true, "ng-controller=\"ProblemController\">");
             parser.advance(true, "<h1>");
-            String taskName = StringEscapeUtils.unescapeHtml(parser.advance(false, "</h1>").trim());
+            String taskName = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</h1>").trim());
             String taskClass = CodeChefParser.getTaskID(taskName);
             StreamConfiguration input = new StreamConfiguration(StreamConfiguration.StreamType.LOCAL_REGEXP,
                     "\\\\d*[.]in");
             List<Test> tests = new ArrayList<Test>();
             parser.advance(true, "<pre class=\"input-output\">");
-            String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>").trim()) + "\n";
+            String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>").trim()) + "\n";
             parser.advance(true, "<pre class=\"input-output\">");
-            String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>").trim()) + "\n";
+            String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>").trim()) + "\n";
             tests.add(new Test(testInput, testOutput, tests.size()));
             parser.advance(true, "<form id=\"submit-form\"");
             parser.advance(true, "problem/");

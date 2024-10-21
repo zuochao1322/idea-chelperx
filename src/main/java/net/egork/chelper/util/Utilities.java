@@ -16,6 +16,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.project.ProjectManagerAdapter;
+import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderRootType;
@@ -63,36 +64,12 @@ public class Utilities {
             "TaskClass.template");
     private static Parser defaultParser = Parser.PARSERS[0];
 
-    public static void addListeners() {
-        ProjectManager.getInstance().addProjectManagerListener(new ProjectManagerAdapter() {
-            @Override
-            public void projectOpened(Project project) {
-                ProjectData configuration = ProjectData.load(project);
-                if (configuration != null) {
-                    eligibleProjects.put(project, configuration);
-                    TopCoderAction.start(project);
-                    ensureLibrary(project);
-                    CodeGenerationUtilities.createTaskClassTemplateIfNeeded(project, null);
-                    CodeGenerationUtilities.createCheckerClassTemplateIfNeeded(project);
-                    CodeGenerationUtilities.createTestCaseClassTemplateIfNeeded(project);
-                    CodeGenerationUtilities.createTopCoderTaskTemplateIfNeeded(project);
-                    CodeGenerationUtilities.createTopCoderTestCaseClassTemplateIfNeeded(project);
-                    ChromeParser.checkInstalled(project, configuration);
-                }
-            }
-
-            @Override
-            public void projectClosed(Project project) {
-                eligibleProjects.remove(project);
-            }
-        });
-    }
 
     public static PsiElement getPsiElement(Project project, String classFQN) {
         return JavaPsiFacade.getInstance(project).findClass(classFQN, GlobalSearchScope.allScope(project));
     }
 
-    private static void ensureLibrary(final Project project) {
+    public static void ensureLibrary(final Project project) {
         final ProjectData data = Utilities.getData(project);
         if (data.libraryVersion == ProjectData.CURRENT_LIBRARY_VERSION) {
             return;
@@ -190,7 +167,7 @@ public class Utilities {
                         TaskConfigurationType.INSTANCE.getConfigurationFactories()[0]), false);
         manager.addConfiguration(configuration, false);
         if (setActive) {
-            manager.setActiveConfiguration(configuration);
+            manager.setSelectedConfiguration(configuration);
         }
         return configuration;
     }
@@ -205,6 +182,11 @@ public class Utilities {
 
     public static void addProjectData(Project project, ProjectData data) {
         eligibleProjects.put(project, data);
+    }
+
+    // Add a method to remove project data when a project is closed
+    public static void removeProjectData(Project project) {
+        eligibleProjects.remove(project);
     }
 
     public static Image iconToImage(Icon icon) {
@@ -232,7 +214,7 @@ public class Utilities {
                         TopCoderConfigurationType.INSTANCE.getConfigurationFactories()[0]), false);
         manager.addConfiguration(configuration, false);
         if (setActive) {
-            manager.setActiveConfiguration(configuration);
+            manager.setSelectedConfiguration(configuration);
         }
         return configuration;
     }

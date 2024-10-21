@@ -13,7 +13,6 @@ public class CHelperMain implements ApplicationComponent {
     }
 
     public void initComponent() {
-        Utilities.addListeners();
         SSLUtils.trustAllHostnames();
         SSLUtils.trustAllHttpsCertificates();
     }

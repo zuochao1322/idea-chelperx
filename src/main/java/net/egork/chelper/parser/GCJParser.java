@@ -9,7 +9,7 @@ import net.egork.chelper.task.TestType;
 import net.egork.chelper.tester.StringInputStream;
 import net.egork.chelper.util.FileUtilities;
 import net.egork.chelper.util.InputReader;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class GCJParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/gcj.png");
+        return IconLoader.getIcon("/icons/gcj.png", GCJParser.class);
     }
 
     public String getName() {
@@ -237,9 +237,9 @@ public class GCJParser implements Parser {
         try {
             parser.advance(true, "<div class=\"problem-io-wrapper\">");
             parser.advance(true, "<pre class=\"io-content\">", "<code>");
-            String input = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>", "</code>").replaceAll("(\\\\r)?\\\\n", "\n").trim().replaceAll("<br/?>", "")) + "\n";
+            String input = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>", "</code>").replaceAll("(\\\\r)?\\\\n", "\n").trim().replaceAll("<br/?>", "")) + "\n";
             parser.advance(true, "<pre class=\"io-content\">", "<code>");
-            String output = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>", "</code>").replaceAll("(\\\\r)?\\\\n", "\n").trim().replaceAll("<br/?>", ""));
+            String output = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>", "</code>").replaceAll("(\\\\r)?\\\\n", "\n").trim().replaceAll("<br/?>", ""));
             String letter = description.split(" ")[0];
             return new Task(description, null,
                     new StreamConfiguration(StreamConfiguration.StreamType.LOCAL_REGEXP,

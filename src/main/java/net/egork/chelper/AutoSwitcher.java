@@ -5,15 +5,14 @@ import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
-import com.intellij.openapi.application.TransactionGuard;
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.messages.MessageBus;
 import net.egork.chelper.configurations.TaskConfiguration;
 import net.egork.chelper.configurations.TopCoderConfiguration;
 import net.egork.chelper.task.Task;
@@ -26,117 +25,85 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Egor Kulikov (egor@egork.net)
  */
-public class AutoSwitcher implements ProjectComponent {
-    private final Project project;
+public class AutoSwitcher implements StartupActivity {
     private boolean busy;
 
-    public AutoSwitcher(Project project) {
-        this.project = project;
+    @Override
+    public void runActivity(@NotNull Project project) {
+        addSelectedConfigurationListener(project);
+        addFileEditorListeners(project);
     }
 
-    public void initComponent() {
-        // TODO: insert component initialization logic here
-    }
-
-    public void disposeComponent() {
-        // TODO: insert component disposal logic here
-    }
-
-    @NotNull
-    public String getComponentName() {
-        return "AutoSwitcher";
-    }
-
-    public void projectOpened() {
-        addSelectedConfigurationListener();
-        addFileEditorListeners();
-    }
-
-    private void addFileEditorListeners() {
-        MessageBus messageBus = project.getMessageBus();
-        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-            @Override
-            public void fileOpened(FileEditorManager source, VirtualFile file) {
-                selectTask(file);
-            }
-
-            private void selectTask(final VirtualFile file) {
-                Runnable selectTaskRunnable = new Runnable() {
+    private void addFileEditorListeners(@NotNull Project project) {
+        project.getMessageBus().connect()
+                .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
                     @Override
-                    public void run() {
-                        if (busy || file == null) {
-                            return;
-                        }
-                        RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
-                        for (RunConfiguration configuration : runManager.getAllConfigurations()) {
-                            if (configuration instanceof TopCoderConfiguration) {
-                                TopCoderTask task = ((TopCoderConfiguration) configuration).getConfiguration();
-                                if (task != null && file.equals(TaskUtilities.getFile(Utilities.getData(project).defaultDirectory, task.name, project))) {
-                                    busy = true;
-                                    runManager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
-                                            configuration, false));
-                                    busy = false;
-                                }
-                            } else if (configuration instanceof TaskConfiguration) {
-                                Task task = ((TaskConfiguration) configuration).getConfiguration();
-                                if (task != null && file.equals(FileUtilities.getFileByFQN(task.taskClass, configuration.getProject()))) {
-                                    busy = true;
-                                    runManager.setActiveConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
-                                            configuration, false));
-                                    busy = false;
-                                    return;
+                    public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+                        selectTask(file, project);
+                    }
+
+                    private void selectTask(final VirtualFile file, final Project project) {
+                        Runnable selectTaskRunnable = () -> {
+                            if (busy || file == null) {
+                                return;
+                            }
+                            RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
+                            for (RunConfiguration configuration : runManager.getAllConfigurationsList()) {
+                                if (configuration instanceof TopCoderConfiguration) {
+                                    TopCoderTask task = ((TopCoderConfiguration) configuration).getConfiguration();
+                                    if (task != null && file.equals(TaskUtilities.getFile(Utilities.getData(project).defaultDirectory, task.name, project))) {
+                                        busy = true;
+                                        runManager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
+                                                configuration, false));
+                                        busy = false;
+                                    }
+                                } else if (configuration instanceof TaskConfiguration) {
+                                    Task task = ((TaskConfiguration) configuration).getConfiguration();
+                                    if (task != null && file.equals(FileUtilities.getFileByFQN(task.taskClass, configuration.getProject()))) {
+                                        busy = true;
+                                        runManager.setSelectedConfiguration(new RunnerAndConfigurationSettingsImpl(runManager,
+                                                configuration, false));
+                                        busy = false;
+                                        return;
+                                    }
                                 }
                             }
-                        }
+                        };
 
+                        DumbService.getInstance(project).smartInvokeLater(selectTaskRunnable);
                     }
-                };
 
-                DumbService.getInstance(project).smartInvokeLater(selectTaskRunnable);
-            }
-
-            @Override
-            public void selectionChanged(FileEditorManagerEvent event) {
-                selectTask(event.getNewFile());
-            }
-        });
+                    @Override
+                    public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+                        selectTask(event.getNewFile(), project);
+                    }
+                });
     }
 
-    private void addSelectedConfigurationListener() {
-        RunManagerImpl.getInstanceImpl(project).addRunManagerListener(new RunManagerListener() {
-            @Override
-            public void runConfigurationSelected() {
-                RunnerAndConfigurationSettings selectedConfiguration =
-                    RunManagerImpl.getInstanceImpl(project).getSelectedConfiguration();
-                if (selectedConfiguration == null)
-                    return;
-                RunConfiguration configuration = selectedConfiguration.getConfiguration();
+    private void addSelectedConfigurationListener(@NotNull Project project) {
+        project.getMessageBus().connect().subscribe(RunManagerListener.TOPIC, new RunManagerListener() {
+            public void selectedConfigurationChanged(@NotNull RunnerAndConfigurationSettings settings) {
+                RunConfiguration configuration = settings.getConfiguration();
                 if (busy || !(configuration instanceof TopCoderConfiguration || configuration instanceof TaskConfiguration)) {
                     return;
                 }
                 busy = true;
                 VirtualFile toOpen = null;
-                if (configuration instanceof TopCoderConfiguration)
-                    toOpen = TaskUtilities.getFile(Utilities.getData(project).defaultDirectory, ((TopCoderConfiguration) configuration).getConfiguration().name, project);
-                else if (configuration instanceof TaskConfiguration)
-                    toOpen = FileUtilities.getFileByFQN(((TaskConfiguration) configuration).getConfiguration().taskClass, configuration.getProject());
+                if (configuration instanceof TopCoderConfiguration) {
+                    toOpen = TaskUtilities.getFile(Utilities.getData(project).defaultDirectory,
+                            ((TopCoderConfiguration) configuration).getConfiguration().name, project);
+                } else if (configuration instanceof TaskConfiguration) {
+                    toOpen = FileUtilities.getFileByFQN(((TaskConfiguration) configuration).getConfiguration().taskClass,
+                            configuration.getProject());
+                }
                 if (toOpen != null) {
                     final VirtualFile finalToOpen = toOpen;
-                    TransactionGuard.getInstance().submitTransactionAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            FileEditorManager.getInstance(project).openFile(finalToOpen, true);
-                        }
-                    });
+                    ApplicationManager.getApplication().invokeLater(() ->
+                            FileEditorManager.getInstance(project).openFile(finalToOpen, true)
+                    );
                 }
                 busy = false;
             }
         });
-    }
-
-
-    @Override
-    public void projectClosed() {
-        // called when project is being closed
     }
 }

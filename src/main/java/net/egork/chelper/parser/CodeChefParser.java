@@ -8,7 +8,7 @@ import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
 import net.egork.chelper.util.FileUtilities;
 import net.egork.chelper.util.TaskUtilities;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -27,7 +27,7 @@ public class CodeChefParser implements Parser {
     private final static List<String> SPECIAL = Arrays.asList(EASY_ID, MEDIUM_ID, HARD_ID, CHALLENGE_ID, PEER_ID, SCHOOL_ID);
 
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/codechef.png");
+        return IconLoader.getIcon("/icons/codechef.png", CodeChefParser.class);
     }
 
     public String getName() {
@@ -55,7 +55,7 @@ public class CodeChefParser implements Parser {
                 String id = nonPastContestParser.advance(false, "</td>");
                 nonPastContestParser.advance(true, "<a href=\"");
                 nonPastContestParser.advance(true, "\">");
-                String name = StringEscapeUtils.unescapeHtml(nonPastContestParser.advance(false, "</a>"));
+                String name = StringEscapeUtils.unescapeHtml4(nonPastContestParser.advance(false, "</a>"));
                 contests.add(new Description(id, name));
             }
         } catch (ParseException ignored) {
@@ -73,7 +73,7 @@ public class CodeChefParser implements Parser {
                 String id = parser.advance(false, "</td>");
                 parser.advance(true, "<a href=\"");
                 parser.advance(true, "\">");
-                String name = StringEscapeUtils.unescapeHtml(parser.advance(false, "</a>"));
+                String name = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</a>"));
                 contests.add(new Description(id, name));
             }
         } catch (ParseException ignored) {
@@ -124,7 +124,7 @@ public class CodeChefParser implements Parser {
                     taskID = id + " " + parser.advance(false, "\"");
                 }
                 parser.advance(true, "<b>");
-                String name = StringEscapeUtils.unescapeHtml(parser.advance(false, "</b>"));
+                String name = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</b>"));
                 tasks.add(new Description(taskID, name));
             } catch (ParseException e) {
                 break;
@@ -180,17 +180,17 @@ public class CodeChefParser implements Parser {
             if (parser.advanceIfPossible(true, "<h3>Example</h3>") != null) {
                 parser = new StringParser(parser.advance(true, "<h3>", "<!--.problem-statement-->"));
                 while (parser.advanceIfPossible(true, "</b>") != null) {
-                    String input = StringEscapeUtils.unescapeHtml(parser.advance(false, "<b>")).trim();
+                    String input = StringEscapeUtils.unescapeHtml4(parser.advance(false, "<b>")).trim();
                     parser.advance(true, "</b>");
-                    String output = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>")).trim();
+                    String output = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>")).trim();
                     tests.add(new Test(input + "\n", output + "\n", index));
                 }
             } else {
                 while (parser.advanceIfPossible(true, "<h3>Sample Input", "<h3>Sample input") != null) {
                     parser.advance(true, "<pre>");
-                    String input = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+                    String input = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
                     parser.advance(true, "<pre>");
-                    String output = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+                    String output = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
                     tests.add(new Test(input + "\n", output + "\n", index++));
                 }
             }

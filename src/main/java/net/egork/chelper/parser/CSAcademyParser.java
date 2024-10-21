@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -53,9 +53,9 @@ public class CSAcademyParser implements Parser {
             StreamConfiguration output = StreamConfiguration.STANDARD;
             List<Test> tests = new ArrayList<Test>();
             while (parser.advanceIfPossible(true, "<td><pre>") != null) {
-                String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre></td>"));
+                String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre></td>"));
                 parser.advance(true, "<td><pre>");
-                String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre></td>"));
+                String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre></td>"));
                 tests.add(new Test(testInput, testOutput, tests.size()));
             }
             parser = new StringParser(prefix);

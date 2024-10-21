@@ -18,7 +18,7 @@ public class EditTCDialog extends JDialog {
 
     public EditTCDialog(TopCoderTask task, Project project) {
         super(null, task.name, ModalityType.APPLICATION_MODAL);
-        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/topcoder.png")));
+        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/topcoder.png", EditTCDialog.class)));
         setAlwaysOnTop(true);
         setResizable(false);
         this.task = task;

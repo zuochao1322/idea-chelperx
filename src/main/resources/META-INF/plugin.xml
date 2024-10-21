@@ -3,7 +3,7 @@
     <description>Inlines library code and provides testing framework</description>
     <version>4.4.2</version>
     <vendor>Kaitian Xie</vendor>
-    <idea-version since-build="139.0"/>
+    <idea-version since-build="221"/>
 
     <application-components>
         <!-- Add your application components here -->
@@ -86,5 +86,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="net.egork.chelper.configurations.TaskConfigurationType"/>
         <configurationType implementation="net.egork.chelper.configurations.TopCoderConfigurationType"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="net.egork.chelper.util.CHelperStartupActivity"/>
     </extensions>
 </idea-plugin>

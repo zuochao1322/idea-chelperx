@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -48,24 +48,24 @@ public class HackerEarthParser implements Parser {
             String contestName = "";
             parser.advance(true, "<div class=\"problem-desc details-div\">");
             parser.advance(true, "hidden\">");
-            String taskName = StringEscapeUtils.unescapeHtml(parser.advance(false, "</div>")).trim();
+            String taskName = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</div>")).trim();
             String taskClass = CodeChefParser.getTaskID(taskName);
             StreamConfiguration input = StreamConfiguration.STANDARD;
             StreamConfiguration output = StreamConfiguration.STANDARD;
             List<Test> tests = new ArrayList<Test>();
             parser.advance(true, "SAMPLE INPUT</div>");
             parser.advance(true, "<pre>");
-            String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+            String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
             parser.advance(true, "SAMPLE OUTPUT</div>");
             parser.advance(true, "<pre>");
-            String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre>"));
+            String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre>"));
             tests.add(new Test(testInput, testOutput, tests.size()));
             parser.advance(true, ">Memory Limit: </span>");
             parser.advance(true, "<span>");
             String ml = parser.advance(false, " ");
             if (parser.advanceIfPossible(true, "<p class=\"small light challenge-name-text\"") != null) {
                 parser.advance(true, ">");
-                contestName = StringEscapeUtils.unescapeHtml(parser.advance(false, "</p>").trim().replace('/', '-'));
+                contestName = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</p>").trim().replace('/', '-'));
             }
             return Collections.singleton(new Task(taskName, defaultTestType(), input, output, tests.toArray(new Test[tests.size()]), null,
                     "-Xmx" + ml + "M", "Main", taskClass, TokenChecker.class.getCanonicalName(), "",

@@ -5,7 +5,7 @@ import net.egork.chelper.task.StreamConfiguration;
 import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -56,9 +56,9 @@ public class NewGCJParser implements Parser {
             StreamConfiguration output = StreamConfiguration.STANDARD;
             List<Test> tests = new ArrayList<Test>();
             if (parser.advanceIfPossible(true, "<pre class=\"io-content\">") != null) {
-                String testInput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre></td>"));
+                String testInput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre></td>"));
                 parser.advance(true, "<pre class=\"io-content\">");
-                String testOutput = StringEscapeUtils.unescapeHtml(parser.advance(false, "</pre></td>"));
+                String testOutput = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</pre></td>"));
                 tests.add(new Test(testInput, testOutput, tests.size()));
             }
             return Collections.singleton(new Task(taskName, defaultTestType(), input, output, tests.toArray(new Test[tests.size()]), null,

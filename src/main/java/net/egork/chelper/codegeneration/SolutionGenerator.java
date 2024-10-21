@@ -453,6 +453,18 @@ public class SolutionGenerator {
         if (task.includeLocale) {
             builder.append("\t\tLocale.setDefault(Locale.US);\n");
         }
+        if(task.useThreadLocalStack) {
+            builder.append("\t\tThread thread = new Thread(null, new TaskAdapter(), \"\", ").append(task.stackSize).append(");\n");
+            builder.append("\t\tthread.start();\n");
+            builder.append("\t\ttry {\n");
+            builder.append("\t\t\tthread.join();\n");
+            builder.append("\t\t} catch(InterruptedException e) {\n");
+            builder.append("\t\t}");
+            builder.append("\t}\n\n");
+            builder.append("\tstatic class TaskAdapter implements Runnable {\n");
+            builder.append("\t\t@Override\n");
+            builder.append("\t\tpublic void run() {\n");
+        }
         if (task.input.type == StreamConfiguration.StreamType.STANDARD) {
             builder.append("\t\tInputStream inputStream = System.in;\n");
         } else if (task.input.type != StreamConfiguration.StreamType.LOCAL_REGEXP) {
@@ -522,6 +534,9 @@ public class SolutionGenerator {
                 builder.append("\t\t\tsolver.solve(i, in, out);\n");
                 builder.append("\t\tout.close();\n");
                 break;
+        }
+        if(task.useThreadLocalStack) {
+            builder.append("\t}\n");
         }
         builder.append("\t}\n");
         builder.append("%INLINED_SOURCE%");

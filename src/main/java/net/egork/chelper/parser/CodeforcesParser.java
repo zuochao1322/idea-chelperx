@@ -7,7 +7,7 @@ import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
 import net.egork.chelper.util.FileUtilities;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class CodeforcesParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/codeforces.png");
+        return IconLoader.getIcon("/icons/codeforces.png", CodeforcesParser.class);
     }
 
     public String getName() {
@@ -178,8 +178,8 @@ public class CodeforcesParser implements Parser {
                     parser.advance(false, "<div class=\"output\">", "<DIV class=\"output\">");
                     parser.advanceRegex(true, "<pre [^>]+>", "<PRE [^>]+>");
                     String testOutput = parser.advance(false, "</pre>", "</PRE>").replace("<br />", "\n").replace("<br>", "\n").replace("<BR/>", "\n");
-                    tests.add(new Test(StringEscapeUtils.unescapeHtml(testInput),
-                            StringEscapeUtils.unescapeHtml(testOutput), tests.size()));
+                    tests.add(new Test(StringEscapeUtils.unescapeHtml4(testInput),
+                            StringEscapeUtils.unescapeHtml4(testOutput), tests.size()));
                 } catch (ParseException e) {
                     break;
                 }

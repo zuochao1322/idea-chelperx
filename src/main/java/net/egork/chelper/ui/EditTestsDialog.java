@@ -39,7 +39,7 @@ public class EditTestsDialog extends JDialog {
 
     public EditTestsDialog(Test[] tests, Project project) {
         super(null, "Tests", ModalityType.APPLICATION_MODAL);
-        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/editTests.png")));
+        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/editTests.png", EditTestsDialog.class)));
         setAlwaysOnTop(true);
         setResizable(false);
         this.tests = new ArrayList<Test>(Arrays.asList(tests));

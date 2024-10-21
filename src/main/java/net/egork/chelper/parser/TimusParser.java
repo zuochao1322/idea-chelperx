@@ -7,7 +7,7 @@ import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
 import net.egork.chelper.util.FileUtilities;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class TimusParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/timus.png");
+        return IconLoader.getIcon("/icons/timus.png", TimusParser.class);
     }
 
     public String getName() {
@@ -72,7 +72,7 @@ public class TimusParser implements Parser {
                     String id = parser.advance(false, "\">");
                     StringParser prefixParser = new StringParser(prefix);
                     prefixParser.advance(true, "<H3 CLASS=\"title\">");
-                    String description = StringEscapeUtils.unescapeHtml(prefixParser.advance(false, "</H3>"));
+                    String description = StringEscapeUtils.unescapeHtml4(prefixParser.advance(false, "</H3>"));
                     contests.add(new Description(id, description));
                 }
             } catch (ParseException ignored) {
@@ -106,7 +106,7 @@ public class TimusParser implements Parser {
             try {
                 parser.advance(true, "<A HREF=\"problem.aspx?space=" + id + "&amp;num=" + index);
                 parser.advance(true, "\">");
-                String description = StringEscapeUtils.unescapeHtml(parser.advance(false, "</A>"));
+                String description = StringEscapeUtils.unescapeHtml4(parser.advance(false, "</A>"));
                 if (index < 1000) {
                     description = ((char) (index - 1 + 'A')) + " - " + description;
                 } else {
@@ -153,8 +153,8 @@ public class TimusParser implements Parser {
                     String input = parser.advance(false, "</PRE>");
                     parser.advance(true, "<PRE>");
                     String output = parser.advance(false, "</PRE>");
-                    tests.add(new Test(StringEscapeUtils.unescapeHtml(input),
-                            StringEscapeUtils.unescapeHtml(output), tests.size()));
+                    tests.add(new Test(StringEscapeUtils.unescapeHtml4(input),
+                            StringEscapeUtils.unescapeHtml4(output), tests.size()));
                 } catch (ParseException e) {
                     break;
                 }

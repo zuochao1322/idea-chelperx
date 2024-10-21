@@ -7,7 +7,7 @@ import net.egork.chelper.task.Task;
 import net.egork.chelper.task.Test;
 import net.egork.chelper.task.TestType;
 import net.egork.chelper.util.FileUtilities;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class RCCParser implements Parser {
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/rcc.png");
+        return IconLoader.getIcon("/icons/rcc.png", RCCParser.class);
     }
 
     public String getName() {
@@ -137,9 +137,9 @@ public class RCCParser implements Parser {
             List<Test> tests = new ArrayList<Test>();
             while (parser.advanceIfPossible(true, "<div class=\"fiftyBox\">\n") != null) {
                 parser.advance(true, "<pre class=\"colorBlue\">");
-                String input = StringEscapeUtils.unescapeHtml(parser.advanceIfPossible(false, "</pre>")).trim() + "\n";
+                String input = StringEscapeUtils.unescapeHtml4(parser.advanceIfPossible(false, "</pre>")).trim() + "\n";
                 parser.advance(true, "<pre class=\"colorBlue\">");
-                String output = StringEscapeUtils.unescapeHtml(parser.advanceIfPossible(false, "</pre>")).trim() + "\n";
+                String output = StringEscapeUtils.unescapeHtml4(parser.advanceIfPossible(false, "</pre>")).trim() + "\n";
                 tests.add(new Test(input, output, tests.size()));
             }
             return new Task(description.description, null, StreamConfiguration.STANDARD, StreamConfiguration.STANDARD,

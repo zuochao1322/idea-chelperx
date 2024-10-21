@@ -14,7 +14,7 @@ import javax.swing.*;
  * @author Egor Kulikov (kulikov@devexperts.com)
  */
 public class TopCoderConfigurationType implements ConfigurationType {
-    private static final Icon ICON = IconLoader.getIcon("/icons/topcoder.png");
+    private static final Icon ICON = IconLoader.getIcon("/icons/topcoder.png", TopCoderConfigurationType.class);
     private final ConfigurationFactory factory;
     public static TopCoderConfigurationType INSTANCE;
 

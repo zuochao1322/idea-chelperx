@@ -25,7 +25,7 @@ public class CreateTaskDialog extends JDialog {
 
     public CreateTaskDialog(Task task, boolean isNewTask, Project project) {
         super(null, "Task", ModalityType.APPLICATION_MODAL);
-        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/newTask.png")));
+        setIconImage(Utilities.iconToImage(IconLoader.getIcon("/icons/newTask.png", CreateTaskDialog.class)));
         setAlwaysOnTop(true);
         setResizable(false);
         this.task = task;
@@ -86,7 +86,7 @@ public class CreateTaskDialog extends JDialog {
                 defaultTask.checkerClass, defaultTask.checkerParameters, defaultTask.testClasses,
                 defaultTask.date, defaultTask.contestName, defaultTask.truncate, defaultTask.inputClass,
                 defaultTask.outputClass, defaultTask.includeLocale, defaultTask.failOnOverflow, defaultTask.template,
-                defaultTask.interactive, defaultTask.interactor);
+                defaultTask.interactive, defaultTask.interactor, defaultTask.useThreadLocalStack, defaultTask.stackSize);
         CreateTaskDialog dialog = new CreateTaskDialog(task, isNewTask, project);
         dialog.setVisible(true);
         Utilities.updateDefaultTask(dialog.task);

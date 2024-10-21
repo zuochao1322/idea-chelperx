@@ -4,6 +4,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDialog;
 import com.intellij.openapi.fileChooser.FileChooserFactory;
@@ -30,7 +31,7 @@ public class UnarchiveTaskAction extends AnAction {
             return;
         }
         final Project project = Utilities.getProject(e.getDataContext());
-        FileChooserDialog dialog = FileChooserFactory.getInstance().createFileChooser(new FileChooserDescriptor(true, false, false, false, false, true) {
+        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, true) {
             @Override
             public boolean isFileSelectable(VirtualFile file) {
                 return super.isFileSelectable(file) && ("task".equals(file.getExtension()) || "tctask".equals(file.getExtension()) || "json".equals(file.getExtension()));
@@ -41,8 +42,11 @@ public class UnarchiveTaskAction extends AnAction {
                 return super.isFileVisible(file, showHiddenFiles) &&
                         (file.isDirectory() || "task".equals(file.getExtension()) || "tctask".equals(file.getExtension()) || "json".equals(file.getExtension()));
             }
-        }, project, null);
-        final VirtualFile[] files = dialog.choose(FileUtilities.getFile(project, Utilities.getData(project).archiveDirectory), project);
+        };
+
+        VirtualFile initialDir = FileUtilities.getFile(project, Utilities.getData(project).archiveDirectory);
+        final List<VirtualFile> files = List.of(FileChooser.chooseFiles(descriptor, project, initialDir));
+
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             public void run() {
                 try {
@@ -123,7 +127,7 @@ public class UnarchiveTaskAction extends AnAction {
             int result = JOptionPane.showOptionDialog(null, "Task location is not under source or in default" +
                             "package, do you want to put it in default directory instead?", "Restore task",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    IconLoader.getIcon("/icons/restore.png"), null, null);
+                    IconLoader.getIcon("/icons/restore.png", UnarchiveTaskAction.class), null, null);
             if (result == JOptionPane.YES_OPTION) {
                 String defaultDirectory = Utilities.getData(project).defaultDirectory;
                 baseDirectory = FileUtilities.getFile(project, defaultDirectory);
